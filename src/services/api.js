@@ -59,3 +59,5 @@ export const deleteSuperhero = (id) => axios.delete(`${API_URL}/${id}`);
 
 export const deleteSuperheroImage = (id, imageName) =>
   axios.delete(`${API_URL}/${id}/images/${imageName}`);
+
+

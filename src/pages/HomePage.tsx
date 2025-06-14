@@ -1,38 +1,42 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import SuperheroList from "../components/SuperheroList.tsx";
 import Pagination from "../components/Pagination.tsx";
 import { getSuperheroes } from "../services/api";
 
 const HomePage = () => {
-  const [superheroes, setSuperheroes] = useState([]);
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
 
-  useEffect(() => {
-    getSuperheroes(page)
-      .then((res) => {
-        setSuperheroes(res.data.superheroes);
-        setTotalPages(res.data.totalPages);
-      })
-      .catch((err) => {
-        console.error("Failed to fetch superheroes", err);
-      });
-  }, [page]);
+  const { data, isLoading, error, isError } = useQuery({
+    queryKey: ["superheroes", page],
+    queryFn: () => getSuperheroes(page),
+    select: (response) => response.data,
+  });
+
+  if (isLoading) {
+    return (
+      <div className="max-w-7xl mx-auto flex justify-center items-center min-h-screen">
+        <div>Завантаження...</div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="max-w-7xl mx-auto flex justify-center items-center min-h-screen">
+        <div className="text-red-500">
+          Помилка завантаження: {error?.message || "Щось пішло не так"}
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="">
-      <h1>Superheroes</h1>
-      <Link to="/create">
-        <button>+ Add New Superhero</button>
-      </Link>
-      <SuperheroList superheroes={superheroes} />
-      <Pagination
-        totalPages={totalPages}
-        onPageChange={setPage}
-      />
+    <div className="max-w-7xl mx-auto">
+      <SuperheroList superheroes={data?.superheroes || []} />
+      <Pagination totalPages={data?.totalPages || 1} onPageChange={setPage} />
     </div>
   );
-}
+};
 
 export default HomePage;

@@ -116,41 +116,41 @@ const EditSuperheroPage = () => {
     deleteImageMutation.mutate(img);
   };
 
-  if (isLoading || !superhero) return <div>Loading...</div>;
+  if (isLoading || !superhero) return <div>Завантаження</div>;
 
   return (
     <div>
-      <h1>Edit Superhero</h1>
+      <h1>Редагування Супергероя</h1>
       <form onSubmit={handleSubmit}>
         <input
           name="nickname"
           value={formData.nickname}
           onChange={handleChange}
-          placeholder="Nickname"
+          placeholder="Призвісько"
         />
         <input
           name="real_name"
           value={formData.real_name}
           onChange={handleChange}
-          placeholder="Real Name"
+          placeholder="Справжнє ім'я"
         />
         <textarea
           name="origin_description"
           value={formData.origin_description}
           onChange={handleChange}
-          placeholder="Origin Description"
+          placeholder="Опис"
         />
         <input
           name="superpowers"
           value={formData.superpowers}
           onChange={handleChange}
-          placeholder="Superpowers (comma-separated)"
+          placeholder="Суперсила"
         />
         <input
           name="catch_phrase"
           value={formData.catch_phrase}
           onChange={handleChange}
-          placeholder="Catch Phrase"
+          placeholder="Популярна фраза"
         />
         <input type="file" multiple onChange={handleImageChange} />
         <button type="submit" disabled={updateMutation.isPending}>
@@ -158,7 +158,7 @@ const EditSuperheroPage = () => {
         </button>
       </form>
 
-      <h3>Current Images:</h3>
+      <h3>Поточне фото</h3>
       <div>
         {superhero.images.map((img) => (
           <div key={img}>

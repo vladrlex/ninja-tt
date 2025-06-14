@@ -2,8 +2,15 @@
 module.exports = {
   content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
   theme: {
-    extend: {},
+    extend: {
+      backgroundColor: {
+        darkRed: "#891812"
+      },
+      colors: {
+        darkRed: "#891812"
+      }
+    },
   },
-  plugins: [],
+  plugins: [require("tailwindcss-animate")],
 }
 
