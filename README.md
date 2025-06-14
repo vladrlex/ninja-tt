@@ -4,11 +4,13 @@ This project is a fullstack web application that allows users to view, create, e
 
 ## 🛠️ Technologies
 
-- **Frontend:** React, TypeScript, React Query, React Hook Form, Axios
+- **Frontend:** React, TypeScript, React Query, React Hook Form, Axios,Tailwind
 - **Backend:** Node.js, Express, JSON file as database (for now)
-- **Other:** React Router, class-variance-authority, Docker (optional), Git
+- **Other:** React Router, class-variance-authority, Git
 
 ---
+
+
 
 ## 🚀 How to Run the Project
 
