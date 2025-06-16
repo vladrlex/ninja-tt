@@ -5,6 +5,7 @@ import { Edit } from "../assets/icons/edit.tsx";
 import { Delete } from "../assets/icons/delete.tsx";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteSuperhero } from "../services/api";
+import { Button } from "./Button.tsx";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -42,14 +43,10 @@ const SuperheroItem: React.FC<Props> = ({ hero }) => {
 
   return (
     <div className="relative bg-gradient-to-b from-slate-800 to-slate-900 text-gray-100 rounded-xl border border-slate-700 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group hover:border-slate-600">
-      <button
-        onClick={handleDelete}
-        disabled={deleteMutation.isPending}
-        className="absolute top-3 right-3 z-10 p-1.5 bg-red-600/80 hover:bg-red-600 text-white rounded-lg transition-all duration-200 disabled:opacity-50 opacity-0 group-hover:opacity-100"
-        aria-label="Видалити героя"
-      >
-        <Delete />
-      </button>
+      <Button variant="icon" size="icon" onClick={handleDelete}>
+        {" "}
+        <Delete />{" "}
+      </Button>
 
       <div className="relative h-52 overflow-hidden">
         {imageUrl ? (
@@ -96,7 +93,7 @@ const SuperheroItem: React.FC<Props> = ({ hero }) => {
         </h3>
       </div>
 
-      <div className="flex gap-2 p-4 bg-slate-800/50 backdrop-blur-sm">
+      <div className="flex flex-col gap-2 p-4 bg-slate-800/50 backdrop-blur-sm">
         <Link
           to={`/edit/${hero._id}`}
           className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-slate-700 hover:bg-slate-600 text-gray-200 hover:text-white rounded-lg text-sm font-medium transition-all duration-200 border border-slate-600 hover:border-slate-500"

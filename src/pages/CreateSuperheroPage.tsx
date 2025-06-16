@@ -1,8 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
-import SuperheroForm from "../components/SuperheroForm.tsx";
 import { createSuperhero } from "../services/api";
 import { SuperheroFormData } from "../types/types";
+import { Button } from "../components/Button.tsx";
+import { SuperheroForm } from "../components/SuperheroForm.tsx";
 
 const CreateSuperheroPage = () => {
   const navigate = useNavigate();
@@ -21,17 +22,15 @@ const CreateSuperheroPage = () => {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
-      <button
-        onClick={() => navigate(-1)}
-        className="mb-6 text-blue-500 hover:underline"
-      >
-        ← Назад
-      </button>
-      <h1 className="text-3xl font-bold mb-6 text-center">Create Superhero</h1>
+      <Button onClick={() => navigate(-1)} variant="ghost" className="mb-6">
+        Назад
+      </Button>
+
+      <h1 className="text-3xl font-bold mb-6 text-center">Створити Супергероя</h1>
       <SuperheroForm
         onSubmit={(data, files) => mutation.mutate({ data, files })}
         isSubmitting={mutation.isPending}
-        submitText="Create"
+        submitText="Створити"
       />
     </div>
   );

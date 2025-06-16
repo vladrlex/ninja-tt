@@ -8,10 +8,11 @@ export interface Superhero {
   images: string[];
 }
 
-export interface SuperheroFormData {
+export type SuperheroFormData = {
   nickname: string;
   real_name: string;
   origin_description: string;
-  superpowers: string;
   catch_phrase: string;
-}
+  superpowers: string;
+};
+

@@ -1,35 +1,17 @@
 import React from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getSuperhero, deleteSuperheroImage } from "../services/api";
-import { Superhero } from "../types/types";
+import { useNavigate, Link } from "react-router-dom";
+import { useEditSuperhero } from "../hooks/useEditSuperhero.ts";
+import { Button } from "../components/Button.tsx";
+import { ImageGallery } from "../components/ImageGallery.tsx";
 
 const SuperheroDetailsPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
-  const API_URL = process.env.REACT_APP_API_URL;
-
   const {
-    data: hero,
+    superhero: hero,
     isLoading,
-    isError,
-  } = useQuery<Superhero>({
-    queryKey: ["superhero", id],
-    queryFn: () => getSuperhero(id!).then((res) => res.data),
-    enabled: !!id,
-  });
+    deleteImageMutation,
+  } = useEditSuperhero();
 
-  const deleteImageMutation = useMutation({
-    mutationFn: (imageName: string) => deleteSuperheroImage(id!, imageName),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["superhero", id as string] });
-
-    },
-    onError: () => {
-      alert("Не вдалося видалити фото");
-    },
-  });
+  const navigate = useNavigate();
 
   if (isLoading)
     return (
@@ -37,12 +19,7 @@ const SuperheroDetailsPage: React.FC = () => {
         Завантаження
       </div>
     );
-  if (isError)
-    return (
-      <div className="text-center mt-10 text-red-500">
-        Помилка завантаження деталей супергероя
-      </div>
-    );
+
   if (!hero)
     return (
       <div className="text-center mt-10 text-gray-500">
@@ -77,36 +54,18 @@ const SuperheroDetailsPage: React.FC = () => {
 
       {hero.images?.length > 0 && (
         <div className="mt-6">
-          <h2 className="text-xl font-semibold mb-2">Фото:</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {hero.images.map((image, index) => (
-              <div key={index} className="relative">
-                <img
-                  src={`${API_URL}/uploads/${image}`}
-                  alt={`Hero ${index}`}
-                  className="w-full h-64 object-cover rounded-lg shadow"
-                />
-                {hero.images.length > 1 && (
-                  <button
-                    onClick={() => deleteImageMutation.mutate(image)}
-                    className="absolute top-2 right-2 bg-red-600 text-white px-2 py-1 text-sm rounded hover:bg-red-700"
-                  >
-                    🗑
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
+          <ImageGallery
+            images={hero.images}
+            onDelete={(img) => deleteImageMutation.mutate(img)}
+          />
         </div>
       )}
 
       <div className="mt-8 flex justify-between">
-        <button
-          onClick={() => navigate("/")}
-          className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-md text-gray-700"
-        >
+        <Button onClick={() => navigate("/")} variant="subtle" size="md">
           Назад
-        </button>
+        </Button>
+
         <Link
           to={`/edit/${hero._id}`}
           className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md"
