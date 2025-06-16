@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import SuperheroList from "../components/SuperheroList.tsx";
 import Pagination from "../components/Pagination.tsx";

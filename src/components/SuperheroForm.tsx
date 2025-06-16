@@ -1,10 +1,6 @@
-import {
-  ChangeEvent,
-  FormEvent,
-  useState,
-  useEffect,
-} from "react";
+import { useForm } from "@tanstack/react-form";
 import { SuperheroFormData } from "../types/types";
+import { Button } from "./Button.tsx";
 
 type Props = {
   initialData?: SuperheroFormData;
@@ -16,111 +12,129 @@ type Props = {
   submitText: string;
 };
 
-const SuperheroForm = ({
+export const SuperheroForm = ({
   initialData,
   onSubmit,
   isSubmitting,
   submitText,
 }: Props) => {
-  const [formData, setFormData] = useState<SuperheroFormData>(
-    initialData || {
-      nickname: "",
-      real_name: "",
-      origin_description: "",
-      catch_phrase: "",
-      superpowers: "",
-    }
-  );
-
-  const [images, setImages] = useState<File[]>([]);
-
-  useEffect(() => {
-    if (initialData) {
-      setFormData(initialData);
-    }
-  }, [initialData]);
-
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setImages(Array.from(e.target.files));
-    }
-  };
-
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    const dataToSend = {
-      ...formData,
-      superpowers: formData.superpowers
+  const form = useForm({
+    defaultValues: {
+      nickname: initialData?.nickname ?? "",
+      real_name: initialData?.real_name ?? "",
+      origin_description: initialData?.origin_description ?? "",
+      catch_phrase: initialData?.catch_phrase ?? "",
+      superpowers: initialData?.superpowers ?? "",
+      images: [] as File[],
+    },
+    onSubmit: async ({ value }) => {
+      const superpowersArray = value.superpowers
         .split(",")
         .map((p) => p.trim())
-        .filter(Boolean),
-    };
-    onSubmit(dataToSend, images);
-  };
+        .filter(Boolean);
+
+      onSubmit(
+        {
+          nickname: value.nickname,
+          real_name: value.real_name,
+          origin_description: value.origin_description,
+          catch_phrase: value.catch_phrase,
+          superpowers: superpowersArray,
+        },
+        value.images
+      );
+    },
+  });
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      encType="multipart/form-data"
-      className="space-y-6 bg-white p-6 rounded-2xl shadow-lg"
-    >
-      {[
-        { label: "Прізвисько", name: "nickname", type: "text" },
-        { label: "Справжнє ім'я", name: "real_name", type: "text" },
-        { label: "Опис", name: "origin_description", type: "textarea" },
-        { label: "Суперсила", name: "superpowers", type: "text" },
-        { label: "Популярна фраза", name: "catch_phrase", type: "text" },
-      ].map((field) => (
-        <div key={field.name}>
-          <label className="block font-medium mb-1">{field.label}</label>
-          {field.type === "textarea" ? (
-            <textarea
-              name={field.name}
-              value={formData[field.name as keyof SuperheroFormData]}
-              onChange={handleChange}
-              required
-              className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
-              rows={4}
-            />
-          ) : (
+    <form onSubmit={form.handleSubmit} className="space-y-4">
+      <form.Field name="nickname">
+        {(field) => (
+          <div>
             <input
-              type={field.type}
-              name={field.name}
-              value={formData[field.name as keyof SuperheroFormData]}
-              onChange={handleChange}
-              required
-              className="w-full p-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
+              value={field.state.value}
+              onChange={(e) => field.handleChange(e.target.value)}
+              onBlur={field.handleBlur}
+              placeholder="Прізвисько"
+              className="border px-2 py-1 w-full"
             />
-          )}
-        </div>
-      ))}
+          </div>
+        )}
+      </form.Field>
 
-      <div>
-        <label className="block font-medium mb-1">Фото</label>
-        <input
-          type="file"
-          multiple
-          onChange={handleImageChange}
-          className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-        />
-      </div>
+      <form.Field name="real_name">
+        {(field) => (
+          <div>
+            <input
+              value={field.state.value}
+              onChange={(e) => field.handleChange(e.target.value)}
+              onBlur={field.handleBlur}
+              placeholder="Справжнє ім'я"
+              className="border px-2 py-1 w-full"
+            />
+          </div>
+        )}
+      </form.Field>
 
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="w-full bg-blue-600 text-white py-2 rounded-xl hover:bg-blue-700 transition disabled:bg-gray-400"
-      >
-        {isSubmitting ? "Saving..." : submitText}
-      </button>
+      <form.Field name="origin_description">
+        {(field) => (
+          <div>
+            <textarea
+              value={field.state.value}
+              onChange={(e) => field.handleChange(e.target.value)}
+              onBlur={field.handleBlur}
+              placeholder="Опис"
+              className="border px-2 py-1 w-full"
+            />
+          </div>
+        )}
+      </form.Field>
+
+      <form.Field name="superpowers">
+        {(field) => (
+          <div>
+            <input
+              value={field.state.value}
+              onChange={(e) => field.handleChange(e.target.value)}
+              onBlur={field.handleBlur}
+              placeholder="Суперсили (через кому)"
+              className="border px-2 py-1 w-full"
+            />
+          </div>
+        )}
+      </form.Field>
+
+      <form.Field name="catch_phrase">
+        {(field) => (
+          <div>
+            <input
+              value={field.state.value}
+              onChange={(e) => field.handleChange(e.target.value)}
+              onBlur={field.handleBlur}
+              placeholder="Фраза"
+              className="border px-2 py-1 w-full"
+            />
+          </div>
+        )}
+      </form.Field>
+
+      <form.Field name="images">
+        {(field) => (
+          <div>
+            <input
+              type="file"
+              multiple
+              onChange={(e) =>
+                field.handleChange(Array.from(e.target.files ?? []))
+              }
+            />
+          </div>
+        )}
+      </form.Field>
+
+      <Button type="submit" isLoading={isSubmitting}>
+        {submitText}
+      </Button>
     </form>
   );
 };
-
-export default SuperheroForm;

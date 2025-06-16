@@ -1,3 +1,5 @@
+import { Button } from "./Button.tsx";
+
 const Pagination = ({ totalPages, onPageChange }) => {
   if (totalPages <= 1) return null;
 
@@ -6,9 +8,14 @@ const Pagination = ({ totalPages, onPageChange }) => {
   return (
     <div>
       {pages.map((page) => (
-        <button key={page} onClick={() => onPageChange(page)}>
-          {page}
-        </button>
+         <Button
+    key={page}
+    onClick={() => onPageChange(page)}
+    variant="outline"
+    size="sm"
+  >
+    {page}
+  </Button>
       ))}
     </div>
   );
